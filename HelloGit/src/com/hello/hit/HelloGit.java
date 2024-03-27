@@ -85,3 +85,59 @@ jobs:
         # Note: Adjust the file extensions in the regex pattern to include relevant file types
 
         # Add additional steps here if needed, such as logging or further processing of matches
+name: Regex Password Check
+
+on:
+  push:
+    branches:
+      - main  # Change to your default branch name if different
+
+jobs:
+  check_passwords:
+    name: Check for Passwords
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Scan for passwords
+        run: |
+          # Use find to locate files based on a regex pattern and then grep to search for passwords
+          find . -type f -regextype posix-extended -regex '.*\.(txt|md|conf|yml|yaml)' -exec grep -qEi '(password|pwd|pass)\s*[:=]' {} \; && { echo "Potential passwords found. Action failed."; exit 1; } || true
+
+        # Note: Adjust the file extensions in the regex pattern to include relevant file types
+
+        # Add additional steps here if needed, such as logging or further processing of matches
+name: Regex Password Check
+
+on:
+  push:
+    branches:
+      - main  # Change to your default branch name if different
+
+jobs:
+  check_passwords:
+    name: Check for Passwords
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Scan for passwords
+        run: |
+          # Use a shell script to search for passwords
+          if find . -type f -regextype posix-extended -regex '.*\.(txt|md|conf|yml|yaml)' -exec grep -qEi '(password|pwd|pass)\s*[:=]' {} \;; then
+            echo "Potential passwords found. Action failed."
+            exit 1
+          else
+            echo "No potential passwords found. Action succeeded."
+          fi
+
+        # Note: Adjust the file extensions in the regex pattern to include relevant file types
+
+        # Add additional steps here if needed, such as logging or further processing of matches
+
+
+
