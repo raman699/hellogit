@@ -61,4 +61,27 @@ jobs:
 
         # Add additional steps here if needed, such as logging or further processing of matches
 
+name: Regex Password Check
 
+on:
+  push:
+    branches:
+      - main  # Change to your default branch name if different
+
+jobs:
+  check_passwords:
+    name: Check for Passwords
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Scan for passwords
+        run: |
+          # Use grep to search for potential passwords using a regex pattern
+          find . -type f -regextype posix-extended -regex '.*\.(txt|md|conf|yml|yaml)' -exec grep -lEi '(password|pwd|pass)\s*[:=]' {} + || true
+
+        # Note: Adjust the file extensions in the regex pattern to include relevant file types
+
+        # Add additional steps here if needed, such as logging or further processing of matches
