@@ -34,3 +34,31 @@ main() {
 
 # Execute main function
 main
+
+
+name: Regex Password Check
+
+on:
+  push:
+    branches:
+      - main  # Change to your default branch name if different
+
+jobs:
+  check_passwords:
+    name: Check for Passwords
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Scan for passwords
+        run: |
+          # Use grep to search for potential passwords using a regex pattern
+          grep -rnEi --include=*.{txt,md,conf,yml,yaml} '(password|pwd|pass)\s*[:=]' .
+
+        # Note: Adjust the file extensions in --include=*.{...} to include relevant file types
+
+        # Add additional steps here if needed, such as logging or further processing of matches
+
+
