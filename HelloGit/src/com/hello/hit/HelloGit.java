@@ -139,5 +139,19 @@ jobs:
 
         # Add additional steps here if needed, such as logging or further processing of matches
 
+hhhSELECT t1.col1, t1.col2, t1.col3, t1.concat_col
+FROM your_table t1
+INNER JOIN your_table t2 ON t1.concat_col = t2.concat_col
+WHERE t1.col1 != t2.col1
+AND t1.col2 != t2.col2
+AND t1.col3 != t2.col3;
+
+
+
+
+
+
+
+
 
 
