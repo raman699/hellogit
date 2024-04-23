@@ -1,11 +1,6 @@
-GitHub Action for Password Strength Check
-
-Implementing a GitHub Action to enforce strong password policies within your workflows.
-How it Works:
-
-Utilizes regular expressions (regex) to check the strength of passwords entered by users or stored in repositories.
+Utilizes GitHub Actions to automatically scan code repositories for known vulnerabilities in dependencies.
 Benefits:
 
-Enhanced Security: Ensures that passwords meet minimum complexity requirements, reducing the risk of unauthorized access or data breaches.
-Compliance: Helps maintain compliance with security standards and regulations that mandate strong password policies.
-User Education: Promotes awareness of good password hygiene among developers and contributors.
+Early Detection: Identifies vulnerabilities as soon as code is pushed, enabling prompt remediation.
+Reduced Risk: Minimizes the chance of deploying code with known security flaws, enhancing the overall security posture.
+Compliance: Helps maintain compliance with security standards and regulations by ensuring the use of up-to-date and secure dependencies.
