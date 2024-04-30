@@ -147,6 +147,39 @@ AND t1.col2 != t2.col2
 AND t1.col3 != t2.col3;
 
 
+gg
+name: Java Unit Test Coverage
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+
+    - name: Build with Maven
+      run: mvn -B clean package
+
+    - name: Run tests with JaCoCo coverage
+      run: mvn -B jacoco:prepare-agent test jacoco:report
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage
+        path: target/site/jacoco/index.html
+
   <plugin>
     <groupId>org.jacoco</groupId>
     <artifactId>jacoco-maven-plugin</artifactId>
