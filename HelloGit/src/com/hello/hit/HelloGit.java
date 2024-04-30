@@ -202,7 +202,46 @@ jobs:
 </plugin>
 
 
+name: Java Unit Test Coverage
 
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+
+    - name: Build with Maven
+      run: mvn -B clean package
+
+    - name: Run tests with JaCoCo coverage
+      run: mvn -B jacoco:prepare-agent test jacoco:report
+
+    - name: Parse coverage report
+      id: coverage
+      run: |
+        coverage=$(awk '/<td class="ctr2" data-toggle="tooltip" title="Line coverage">/ {print $3}' target/site/jacoco/index.html | cut -d'%' -f1)
+        echo "::set-output name=coverage::$coverage%"
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage
+        path: target/site/jacoco/index.html
+
+    - name: Display coverage percentage
+      run: echo "Coverage: ${{ steps.coverage.outputs.coverage }}%"
 
 
 
