@@ -207,9 +207,9 @@ name: Java Unit Test Coverage
 on:
   push:
     branches:
-      - main
+      - iolll
 
-jobs:
+jobs:m
   test:
     runs-on: ubuntu-latest
 
@@ -242,6 +242,12 @@ jobs:
 
     - name: Display coverage percentage
       run: echo "Coverage: ${{ steps.coverage.outputs.coverage }}%"
+
+- name: Parse coverage report
+  id: coverage
+  run: |
+    coverage=$(awk -F'[><]' '/Line coverage/ {print $3}' target/site/jacoco/index.html | cut -d'%' -f1)
+    echo "::set-output name=coverage::$coverage%"
 
 
 
