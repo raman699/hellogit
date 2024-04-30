@@ -250,6 +250,24 @@ jobs:m
     echo "::set-output name=coverage::$coverage%"
 
 
+- name: Upload coverage report
+  if: success() && runner.os == 'Linux'
+  uses: actions/upload-artifact@v2
+  with:
+    name: coverage
+    path: target/site/jacoco/
+
+
+
+- name: List Jacoco directory
+  run: ls -R target/site/jacoco/
+
+
+
+
+
+
+
 
 
 
