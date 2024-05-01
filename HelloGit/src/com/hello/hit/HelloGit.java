@@ -263,6 +263,32 @@ jobs:m
   run: ls -R target/site/jacoco/
 
 
+name: Deploy to Kubernetes
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
+
+    - name: Build application
+      run: mvn clean install
+
+    - name: Deploy to Kubernetes
+      run: kubectl apply -f kubernetes-manifests/
+
 
 
 
