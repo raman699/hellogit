@@ -289,6 +289,38 @@ jobs:
     - name: Deploy to Kubernetes
       run: kubectl apply -f kubernetes-manifests/
 
+name: Build and Upload Artifacts
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Add your build steps here
+    - name: Build application
+      run: |
+        # Example Maven build command
+        mvn clean install
+
+    # Upload artifacts
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: my-artifact
+        path: target/  # Path to the directory or file you want to upload
+
+
+
+
+
 
 
 
