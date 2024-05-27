@@ -6,3 +6,6 @@ ddd.
 SELECT column_name, COUNT(*) AS count
 FROM table_name
 GROUP BY column_name;
+
+
+kafka-consumer-groups.sh --bootstrap-server <kafka-broker>:<port> --group <consumer-group> --topic <topic-name> --reset-offsets --to-offset <offset-value> --execute
