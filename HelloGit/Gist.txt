@@ -9,3 +9,7 @@ GROUP BY column_name;
 
 
 kafka-consumer-groups.sh --bootstrap-server <kafka-broker>:<port> --group <consumer-group> --topic <topic-name> --reset-offsets --to-offset <offset-value> --execute
+
+
+
+kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group my-consumer-group --topic my-topic --reset-offsets --to-datetime 2023-05-27T15:30:00.000 --execute
