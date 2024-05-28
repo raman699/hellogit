@@ -13,3 +13,9 @@ kafka-consumer-groups.sh --bootstrap-server <kafka-broker>:<port> --group <consu
 
 
 kafka-consumer-groups.sh --bootstrap-server localhost:9092 --group my-consumer-group --topic my-topic --reset-offsets --to-datetime 2023-05-27T15:30:00.000 --execute
+
+
+jjj. kafka-consumer-groups.sh --bootstrap-server <bootstrap_server> --group <group_id> --reset-offsets --to-offset <offset> --execute --topic <topic_name>
+
+
+
