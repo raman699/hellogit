@@ -1,0 +1,10 @@
+MERGE INTO Table1 AS target
+USING Table2 AS source
+ON 
+    target.PrimaryKeyColumn = source.PrimaryKeyColumn
+    AND target.OtherColumn1 = source.OtherColumn1
+    AND target.OtherColumn2 = source.OtherColumn2
+    -- Add more columns as needed
+WHEN NOT MATCHED BY TARGET THEN
+    INSERT (PrimaryKeyColumn, OtherColumn1, OtherColumn2, ...)
+    VALUES (source.PrimaryKeyColumn, source.OtherColumn1, source.OtherColumn2, ...);
