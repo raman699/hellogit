@@ -1,0 +1,21 @@
+export interface TreeNode {
+  name: string;
+  children?: TreeNode[];
+}
+
+const TREE_DATA: TreeNode[] = [
+  {
+    name: 'Root 1',
+    children: [
+      { name: 'Child 1-1' },
+      { name: 'Child 1-2', children: [{ name: 'Leaf 1-2-1' }] }
+    ]
+  },
+  {
+    name: 'Root 2',
+    children: [
+      { name: 'Child 2-1' },
+      { name: 'Child 2-2' }
+    ]
+  }
+];
