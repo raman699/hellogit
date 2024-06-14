@@ -1,0 +1,146 @@
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTreeModule } from '@angular/material/tree';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { AppComponent } from './app.component';
+import { TextBoxComponent } from './text-box/text-box.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    TextBoxComponent
+  ],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatTreeModule,
+    MatIconModule,
+    MatButtonModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+import { Component } from '@angular/core';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
+import { NestedTreeControl } from '@angular/cdk/tree';
+
+interface TreeNode {
+  name: string;
+  children?: TreeNode[];
+}
+
+const TREE_DATA: TreeNode[] = [
+  {
+    name: 'Parent 1',
+    children: [
+      { name: 'Child 1' },
+      { name: 'Child 2' },
+    ]
+  },
+  {
+    name: 'Parent 2',
+    children: [
+      {
+        name: 'Child 3',
+        children: [
+          { name: 'Grandchild 1' },
+          { name: 'Grandchild 2' },
+        ]
+      },
+      { name: 'Child 4' },
+    ]
+  }
+];
+
+@Component({
+  selector: 'app-text-box',
+  templateUrl: './text-box.component.html',
+  styleUrls: ['./text-box.component.css']
+})
+export class TextBoxComponent {
+  treeControl = new NestedTreeControl<TreeNode>(node => node.children);
+  dataSource = new MatTreeNestedDataSource<TreeNode>();
+
+  inputText: string = '';
+  showTree = false;
+
+  constructor() {
+    this.dataSource.data = TREE_DATA;
+  }
+
+  hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
+
+  toggleTree() {
+    this.showTree = !this.showTree;
+  }
+}
+
+<mat-form-field appearance="fill">
+  <mat-label>Enter text</mat-label>
+  <input matInput [(ngModel)]="inputText" (focus)="toggleTree()">
+</mat-form-field>
+
+<mat-tree [dataSource]="dataSource" [treeControl]="treeControl" *ngIf="showTree">
+  <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+    <li class="mat-tree-node">
+      <button mat-icon-button disabled></button>
+      {{node.name}}
+    </li>
+  </mat-tree-node>
+
+  <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+    <li>
+      <div class="mat-tree-node">
+        <button mat-icon-button matTreeNodeToggle
+                [attr.aria-label]="'toggle ' + node.name">
+          <mat-icon>
+            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+          </mat-icon>
+        </button>
+        {{node.name}}
+      </div>
+      <ul [class.example-tree-invisible]="!treeControl.isExpanded(node)">
+        <ng-container matTreeNodeOutlet></ng-container>
+      </ul>
+    </li>
+  </mat-nested-tree-node>
+</mat-tree>
+
+
+.example-tree-invisible {
+  display: none;
+}
+
+.mat-form-field {
+  width: 100%;
+  max-width: 400px;
+  margin: 20px 0;
+}
+
+.mat-tree {
+  max-height: 300px;
+  overflow: auto;
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+
+
+
+
