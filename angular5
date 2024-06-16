@@ -49,3 +49,11 @@ addChildToNode(nodeId: number, childName: string) {
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="deleteNode(node.id)">Delete</button>
       </mat-menu>
+
+  deleteNode(nodeId: number) {
+    if (this.familyTree.id === nodeId) {
+      console.error('Cannot delete the root node');
+    } else {
+      this.deleteNodeById(this.familyTree, nodeId);
+    }
+  }
