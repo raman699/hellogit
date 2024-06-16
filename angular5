@@ -1,0 +1,42 @@
+addChildToNode(nodeId: number, childName: string) {
+    const node = this.findNodeById(this.familyTree, nodeId);
+    if (node) {
+      const newChildId = this.generateNewId(this.familyTree); // Generate a unique ID for the new child
+      const newChild: FamilyNode = { id: newChildId, name: childName };
+      if (node.children) {
+        node.children.push(newChild);
+      } else {
+        node.children = [newChild];
+      }
+    } else {
+      console.error('Node not found');
+    }
+  }
+
+  findNodeById(node: FamilyNode, id: number): FamilyNode | null {
+    if (node.id === id) {
+      return node;
+    }
+    if (node.children) {
+      for (let child of node.children) {
+        const found = this.findNodeById(child, id);
+        if (found) {
+          return found;
+        }
+      }
+    }
+    return null;
+  }
+
+  generateNewId(node: FamilyNode, maxId = 0): number {
+    maxId = Math.max(maxId, node.id);
+    if (node.children) {
+      for (let child of node.children) {
+        maxId = this.generateNewId(child, maxId);
+      }
+    }
+    return maxId + 1;
+  }
+
+  <button (click)="addChildToNode(node.id, newChildName.value)">Add Child</button>
+      <input type="text" #newChildName placeholder="Child Name">
