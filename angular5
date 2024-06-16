@@ -45,3 +45,7 @@ addChildToNode(nodeId: number, childName: string) {
     event.stopPropagation();
     this.menuTrigger?.openMenu();
   }
+
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="deleteNode(node.id)">Delete</button>
+      </mat-menu>
