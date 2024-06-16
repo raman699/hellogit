@@ -40,3 +40,8 @@ addChildToNode(nodeId: number, childName: string) {
 
   <button (click)="addChildToNode(node.id, newChildName.value)">Add Child</button>
       <input type="text" #newChildName placeholder="Child Name">
+
+ openMenu(event: MouseEvent, nodeId: number) {
+    event.stopPropagation();
+    this.menuTrigger?.openMenu();
+  }
