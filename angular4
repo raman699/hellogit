@@ -1,0 +1,118 @@
+// family-tree.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-family-tree',
+  templateUrl: './family-tree.component.html',
+  styleUrls: ['./family-tree.component.css']
+})
+export class FamilyTreeComponent {
+  familyTree = {
+    name: 'Human',
+    children: [
+      {
+        name: 'Husband',
+        children: [
+          {
+            name: 'Father',
+            children: [
+              {
+                name: 'Grandfather',
+                children: [
+                  { name: 'Great Grandfather' },
+                  { name: 'Great Grandmother' }
+                ]
+              },
+              {
+                name: 'Grandmother',
+                children: [
+                  { name: 'Great Grandfather' },
+                  { name: 'Great Grandmother' }
+                ]
+              }
+            ]
+          },
+          {
+            name: 'Mother',
+            children: [
+              {
+                name: 'Grandfather',
+                children: [
+                  { name: 'Great Grandfather' },
+                  { name: 'Great Grandmother' }
+                ]
+              },
+              {
+                name: 'Grandmother',
+                children: [
+                  { name: 'Great Grandfather' },
+                  { name: 'Great Grandmother' }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        name: 'Wife',
+        children: [
+          {
+            name: 'Father',
+            children: [
+              {
+                name: 'Grandfather',
+                children: [
+                  { name: 'Great Grandfather' },
+                  { name: 'Great Grandmother' }
+                ]
+              },
+              {
+                name: 'Grandmother',
+                children: [
+                  { name: 'Great Grandfather' },
+                  { name: 'Great Grandmother' }
+                ]
+              }
+            ]
+          },
+          {
+            name: 'Mother',
+            children: [
+              {
+                name: 'Grandfather',
+                children: [
+                  { name: 'Great Grandfather' },
+                  { name: 'Great Grandmother' }
+                ]
+              },
+              {
+                name: 'Grandmother',
+                children: [
+                  { name: 'Great Grandfather' },
+                  { name: 'Great Grandmother' },
+                  { name: 'Great Grandmother' }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  };
+}
+
+
+<!-- family-tree.component.html -->
+<div id="tree">
+  <ng-container *ngTemplateOutlet="recursiveTree; context: { $implicit: familyTree }"></ng-container>
+
+  <ng-template #recursiveTree let-node>
+    <div class="entry"><span>{{ node.name }}</span>
+      <div class="branch" *ngIf="node.children && node.children.length">
+        <ng-container *ngFor="let child of node.children">
+          <ng-container *ngTemplateOutlet="recursiveTree; context: { $implicit: child }"></ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </ng-template>
+</div>
