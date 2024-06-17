@@ -1,0 +1,298 @@
+<!-- family-tree.component.html -->
+<div id="tree">
+  <ng-container *ngTemplateOutlet="recursiveTree; context: { $implicit: familyTree }"></ng-container>
+
+  <ng-template #recursiveTree let-node>
+    <div class="entry">
+      <span (click)="toggleNode(node)" [class.collapsed]="!node.expanded">{{ node.name }}</span>
+      <button mat-icon-button [matMenuTriggerFor]="getMenu(node.id)" aria-label="Toggle menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu [attr.id]="'menu_' + node.id" #menu="matMenu">
+        <button mat-menu-item (click)="printNode(node)">Print Node</button>
+        <button mat-menu-item (click)="openUpdateDialog(node)">Update Node</button>
+        <button mat-menu-item (click)="showChildren(node)">Show Children</button>
+      </mat-menu>
+      <div class="branch" *ngIf="node.expanded">
+        <ng-container *ngFor="let child of node.children">
+          <ng-container *ngTemplateOutlet="recursiveTree; context: { $implicit: child }"></ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+
+// family-tree.component.ts
+import { Component, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
+import { MatMenu } from '@angular/material/menu';
+import { MatDialog } from '@angular/material/dialog';
+
+interface FamilyNode {
+  id: number;
+  name: string;
+  expanded?: boolean;
+  children?: FamilyNode[];
+}
+
+@Component({
+  selector: 'app-family-tree',
+  templateUrl: './family-tree.component.html',
+  styleUrls: ['./family-tree.component.css']
+})
+export class FamilyTreeComponent implements AfterViewInit {
+  familyTree: FamilyNode = {
+    id: 1,
+    name: 'Human',
+    expanded: false,
+    children: [
+      {
+        id: 2,
+        name: 'Husband',
+        expanded: false,
+        children: [
+          {
+            id: 3,
+            name: 'Father',
+            expanded: false,
+            children: [
+              {
+                id: 4,
+                name: 'Grandfather',
+                expanded: false,
+                children: [
+                  { id: 5, name: 'Great Grandfather' },
+                  { id: 6, name: 'Great Grandmother' }
+                ]
+              },
+              {
+                id: 7,
+                name: 'Grandmother',
+                expanded: false,
+                children: [
+                  { id: 8, name: 'Great Grandfather' },
+                  { id: 9, name: 'Great Grandmother' }
+                ]
+              }
+            ]
+          },
+          {
+            id: 10,
+            name: 'Mother',
+            expanded: false,
+            children: [
+              {
+                id: 11,
+                name: 'Grandfather',
+                expanded: false,
+                children: [
+                  { id: 12, name: 'Great Grandfather' },
+                  { id: 13, name: 'Great Grandmother' }
+                ]
+              },
+              {
+                id: 14,
+                name: 'Grandmother',
+                expanded: false,
+                children: [
+                  { id: 15, name: 'Great Grandfather' },
+                  { id: 16, name: 'Great Grandmother' }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 17,
+        name: 'Wife',
+        expanded: false,
+        children: [
+          {
+            id: 18,
+            name: 'Father',
+            expanded: false,
+            children: [
+              {
+                id: 19,
+                name: 'Grandfather',
+                expanded: false,
+                children: [
+                  { id: 20, name: 'Great Grandfather' },
+                  { id: 21, name: 'Great Grandmother' }
+                ]
+              },
+              {
+                id: 22,
+                name: 'Grandmother',
+                expanded: false,
+                children: [
+                  { id: 23, name: 'Great Grandfather' },
+                  { id: 24, name: 'Great Grandmother' }
+                ]
+              }
+            ]
+          },
+          {
+            id: 25,
+            name: 'Mother',
+            expanded: false,
+            children: [
+              {
+                id: 26,
+                name: 'Grandfather',
+                expanded: false,
+                children: [
+                  { id: 27, name: 'Great Grandfather' },
+                  { id: 28, name: 'Great Grandmother' }
+                ]
+              },
+              {
+                id: 29,
+                name: 'Grandmother',
+                expanded: false,
+                children: [
+                  { id: 30, name: 'Great Grandfather' },
+                  { id: 31, name: 'Great Grandmother' },
+                  { id: 32, name: 'Great Grandmother' }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  };
+
+  @ViewChildren(MatMenu) matMenus!: QueryList<MatMenu>;
+  menus = new Map<number, MatMenu>();
+
+  constructor(public dialog: MatDialog) {}
+
+  ngAfterViewInit() {
+    this.matMenus.forEach((menu, index) => {
+      const nodeId = this.getNodeIdFromMenu(menu);
+      if (nodeId !== undefined) {
+        this.menus.set(nodeId, menu);
+      }
+    });
+  }
+
+  getMenu(nodeId: number): MatMenu {
+    const menu = this.menus.get(nodeId);
+    if (menu) {
+      return menu;
+    }
+    console.error(`MatMenu for node ID ${nodeId} not found.`);
+    return {} as MatMenu; // Return empty MatMenu or handle error as per your application logic
+  }
+
+  printNode(node: FamilyNode) {
+    console.log('Node details:', node);
+  }
+
+  openUpdateDialog(node: FamilyNode) {
+    const dialogRef = this.dialog.open(UpdateDialogComponent, {
+      width: '250px',
+      data: { name: node.name }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.updateNode(node.id, result);
+      }
+    });
+  }
+
+  updateNode(nodeId: number, newName: string) {
+    const updateNodeName = (node: FamilyNode, id: number, name: string): boolean => {
+      if (node.id === id) {
+        node.name = name;
+        return true;
+      }
+      if (node.children) {
+        for (let child of node.children) {
+          if (updateNodeName(child, id, name)) {
+            return true;
+          }
+        }
+      }
+      return false;
+    };
+
+    if (updateNodeName(this.familyTree, nodeId, newName)) {
+      console.log(`Node ID ${nodeId} updated to name ${newName}`);
+    } else {
+      console.error(`Node ID ${nodeId} not found.`);
+    }
+  }
+
+  toggleNode(node: FamilyNode) {
+    node.expanded = !node.expanded;
+  }
+
+  showChildren(node: FamilyNode) {
+    node.expanded = true; // Expand the node to show its children
+  }
+
+  getNodeIdFromMenu(menu: MatMenu): number | undefined {
+    const match = menu._elementRef.nativeElement.id.match(/menu_(\d+)/);
+    return match ? parseInt(match[1], 10) : undefined;
+  }
+}
+
+
+/* family-tree.component.css */
+
+/* Basic styling for tree entries and branches */
+#tree {
+  font-family: Arial, sans-serif;
+}
+
+.entry {
+  position: relative;
+  margin: 0 0 0 20px; /* Indentation for hierarchy */
+  padding: 10px 0;
+}
+
+.entry span {
+  cursor: pointer; /* Pointer cursor for clickable spans */
+}
+
+.entry button {
+  margin-left: 10px; /* Space between span and menu button */
+}
+
+.branch {
+  margin-left: 20px; /* Indentation for child branches */
+  border-left: 1px solid #ccc; /* Vertical line for hierarchy */
+  padding-left: 20px;
+}
+
+/* Styling for menu button */
+mat-icon-button {
+  vertical-align: middle;
+}
+
+mat-menu {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+/* Additional optional styling for visual enhancement */
+.entry span:hover {
+  color: #007BFF; /* Change color on hover */
+  text-decoration: underline; /* Underline on hover */
+}
+
+.entry span::before {
+  content: "▸"; /* Arrow symbol before each entry */
+  display: inline-block;
+  margin-right: 5px;
+  transform: rotate(90deg); /* Rotate for expanded state */
+}
+
+.entry span.collapsed::before {
+  transform: rotate(0deg); /* Default state */
+}
+
