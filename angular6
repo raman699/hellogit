@@ -1,0 +1,26 @@
+<!-- family-tree.component.html -->
+<div id="tree">
+  <ng-container *ngTemplateOutlet="recursiveTree; context: { $implicit: familyTree }"></ng-container>
+
+  <ng-template #recursiveTree let-node>
+    <div class="entry">
+      <span (click)="toggleNode(node)">{{ node.name }}</span>
+      <button mat-icon-button [matMenuTriggerFor]="getMenu(node.id)" aria-label="Toggle menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu [attr.id]="'menu_' + node.id" #menu="matMenu">
+        <button mat-menu-item (click)="printNode(node)">Print Node</button>
+        <button mat-menu-item (click)="openUpdateDialog(node)">Update Node</button>
+      </mat-menu>
+      <div class="branch" *ngIf="node.expanded">
+        <ng-container *ngFor="let child of node.children">
+          <ng-container *ngTemplateOutlet="recursiveTree; context: { $implicit: child }"></ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+  toggleNode(node: FamilyNode) {
+    node.expanded = !node.expanded;
+  }
