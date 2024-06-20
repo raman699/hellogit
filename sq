@@ -1,0 +1,5 @@
+CREATE VIEW ViewNameWithSingh
+AS
+SELECT *
+FROM TableName
+WHERE Name LIKE '%Singh';
