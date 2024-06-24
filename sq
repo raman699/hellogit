@@ -80,6 +80,25 @@ LEFT JOIN Table1 t1 ON vt.columnD = t1.columnA
 LEFT JOIN Table2 t2 ON vt.columnD = t2.columnB
 LEFT JOIN Table3 t3 ON vt.columnD = t3.columnC
 WHERE vt.versionName IS NULL
-   OR CAST(SUBSTRING(vt.versionName, LEN(vt.versionName), 1) AS INT) = mv.maxVersion;
+   OR CAST(SUBSTRING(vt.versionName, LEN(vt.versionName), 1) AS INT) = mv.maxVersion
+
+
+;
+
+
+
+CREATE VIEW ViewWithFilteredVersions AS
+SELECT ev.*
+FROM ExistingView ev
+LEFT JOIN (
+    SELECT 
+        columnD,
+        MAX(CAST(SUBSTRING(versionName, LEN(versionName), 1) AS INT)) AS maxVersion
+    FROM ExistingView
+    WHERE versionName LIKE '%v[0-9]'
+    GROUP BY columnD
+) mv ON ev.columnD = mv.columnD
+WHERE ev.versionName IS NULL
+   OR CAST(SUBSTRING(ev.versionName, LEN(ev.versionName), 1) AS INT) = mv.maxVersion;
 
 
