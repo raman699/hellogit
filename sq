@@ -63,3 +63,23 @@ WHERE vt.versionName IS NULL
 SELECT * FROM ViewWithGreatestVersion;
 
 
+
+CREATE VIEW ViewWithGreatestVersion AS
+WITH MaxVersions AS (
+    SELECT 
+        columnD,
+        MAX(CAST(SUBSTRING(versionName, LEN(versionName), 1) AS INT)) AS maxVersion
+    FROM VersionTable
+    WHERE versionName LIKE '%v[0-9]'
+    GROUP BY columnD
+)
+SELECT vt.*, t1.*, t2.*, t3.*
+FROM VersionTable vt
+LEFT JOIN MaxVersions mv ON vt.columnD = mv.columnD
+LEFT JOIN Table1 t1 ON vt.columnD = t1.columnA
+LEFT JOIN Table2 t2 ON vt.columnD = t2.columnB
+LEFT JOIN Table3 t3 ON vt.columnD = t3.columnC
+WHERE vt.versionName IS NULL
+   OR CAST(SUBSTRING(vt.versionName, LEN(vt.versionName), 1) AS INT) = mv.maxVersion;
+
+
