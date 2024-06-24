@@ -3,3 +3,19 @@ AS
 SELECT *
 FROM TableName
 WHERE Name LIKE '%Singh';
+
+
+CREATE VIEW ViewWithGreatestVersion AS
+SELECT t1.*, t2.*, t3.*, vt.versionName
+FROM Table1 t1
+JOIN Table2 t2 ON t1.columnA = t2.columnB
+JOIN Table3 t3 ON t1.columnA = t3.columnC
+LEFT JOIN VersionTable vt ON t1.columnA = vt.columnD
+WHERE vt.versionName IS NULL
+   OR vt.versionName = (
+       SELECT TOP 1 vt1.versionName
+       FROM VersionTable vt1
+       WHERE vt1.columnD = t1.columnA
+         AND vt1.versionName LIKE '%v[0-9]'
+       ORDER BY CAST(RIGHT(vt1.versionName, 1) AS INT) DESC
+   );
