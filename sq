@@ -19,3 +19,24 @@ WHERE vt.versionName IS NULL
          AND vt1.versionName LIKE '%v[0-9]'
        ORDER BY CAST(RIGHT(vt1.versionName, 1) AS INT) DESC
    );
+
+CREATE VIEW ViewWithGreatestVersion AS
+SELECT t1.*, t2.*, t3.*, vt.versionName
+FROM Table1 t1
+JOIN Table2 t2 ON t1.columnA = t2.columnB
+JOIN Table3 t3 ON t1.columnA = t3.columnC
+LEFT JOIN VersionTable vt ON t1.columnA = vt.columnD
+LEFT JOIN (
+    SELECT columnD, 
+           MAX(CAST(RIGHT(versionName, 1) AS INT)) AS maxVersion
+    FROM VersionTable
+    WHERE versionName LIKE '%v[0-9]'
+    GROUP BY columnD
+) maxVersions ON vt.columnD = maxVersions.columnD
+WHERE vt.versionName IS NULL
+   OR CAST(RIGHT(vt.versionName, 1) AS INT) = maxVersions.maxVersion;
+
+-- Query the view
+SELECT * FROM ViewWithGreatestVersion;
+
+
