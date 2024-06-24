@@ -101,4 +101,16 @@ LEFT JOIN (
 WHERE ev.versionName IS NULL
    OR CAST(SUBSTRING(ev.versionName, LEN(ev.versionName), 1) AS INT) = mv.maxVersion;
 
-
+CREATE VIEW ViewWithFilteredVersions AS
+SELECT ev.*
+FROM ExistingView ev
+LEFT JOIN (
+    SELECT 
+        columnD,
+        MAX(CAST(RIGHT(versionName, LEN(versionName) - PATINDEX('%v[0-9]%', versionName)) AS INT)) AS maxVersion
+    FROM ExistingView
+    WHERE versionName LIKE '%v[0-9]%'
+    GROUP BY columnD
+) mv ON ev.columnD = mv.columnD
+WHERE ev.versionName IS NULL
+   OR CAST(RIGHT(ev.versionName, LEN(ev.versionName) - PATINDEX('%v[0-9]%', ev.versionName)) AS INT) = mv.maxVersion;
