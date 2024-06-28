@@ -12,3 +12,19 @@ public class AngularController {
         return "forward:/index.html";
     }
 }
+
+
+package com.example.demo;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class AngularController {
+
+    @RequestMapping(value = { "/", "/{path:^(?!api$).*$}", "/**/{path:^(?!api$).*$}" })
+    public String redirect() {
+        // Forward to index.html so that Angular can handle the route.
+        return "forward:/index.html";
+    }
+}
